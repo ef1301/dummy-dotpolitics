@@ -7,18 +7,19 @@ export default class SearchResults extends Component {
         this.state = {
             error: null,
             isLoaded: false,
-            results: [],
+            items: [],
         }
     }
 
     componentDidMount() {
-        fetch("https://www.googleapis.com/civicinfo/v2/elections?key=AIzaSyDggZlSpjNNce614YxmnzLWCBm7QbN_-3A")
+        let key ="AIzaSyDggZlSpjNNce614YxmnzLWCBm7QbN_-3A";
+        fetch(`https://civicinfo.googleapis.com/civicinfo/v2/elections?key=${key}`)
             .then(res => res.json())
             .then(
                 (result) => {
                     this.setState({
                         isLoaded: true,
-                        results: result.items
+                        items: result.elections
                     });
                 },
 
@@ -32,7 +33,7 @@ export default class SearchResults extends Component {
     }
 
     render() {
-        const {error, isLoaded, results} = this.state;
+        const {error, isLoaded, items} = this.state;
         if(error) {
             return (
                 <div>Error: {error.message}</div>
@@ -44,8 +45,8 @@ export default class SearchResults extends Component {
         } else {
             return (
                 <div>
-                    {results.map(item => (
-                        <ResultCard/>
+                    {items.map(item => (
+                        <ResultCard key={item.id} item={item}/>
                     ))}
                 </div>
                 
