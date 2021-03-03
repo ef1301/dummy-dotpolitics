@@ -5,14 +5,40 @@ export default class Home extends Component {
         super(props);
         this.state = {
             results: [],
-            filters: ['By Name', 'By Location']
+            representative: true,
+            filters: ['By Location', 'By Name']
+        }
+
+        this.handleSwitch = this.handleSwitch.bind(this);
+        this.handleFilters = this.handleFilters.bind(this);
+    }
+
+    handleSwitch(event) {
+        this.setState({
+            representative: event.target.checked
+        });
+        this.handleFilters();
+    }
+
+    handleFilters() {
+        if(this.state.representative === true) {
+            this.setState({
+                filters: ['By Location', 'By Name']
+            });
+        } else {
+            this.setState({
+                filters: ['By Location']
+            });
         }
     }
 
     render() {
         return (
             <div>
-                <SearchBar filters={this.state.filters}/>
+                <label className="switch">
+                <input type="checkbox" onChange={this.handleSwitch}></input>
+                </label>
+                <SearchBar value={this.state.representative} filters={this.state.filters}/>
             </div>
         );
     }
