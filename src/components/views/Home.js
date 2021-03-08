@@ -5,7 +5,7 @@ export default class Home extends Component {
         super(props);
         this.state = {
             results: [],
-            representative: true,
+            representative: null,
             filters: ['By Location', 'By Name']
         }
 
@@ -17,10 +17,12 @@ export default class Home extends Component {
         this.setState({
             representative: event.target.checked
         });
+
         this.handleFilters();
     }
 
     handleFilters() {
+        console.log(this.state.representative);
         if(this.state.representative === true) {
             this.setState({
                 filters: ['By Location', 'By Name']
