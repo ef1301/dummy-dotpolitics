@@ -1,15 +1,17 @@
-import logo from './logo.svg';
-import SearchResults from './components/containers/searchResults';
-import Home from './components/views/Home';
+import React from 'react';
+import { BrowserRouter as Router, Route, Switch} from 'react-router-dom';
+import {Home, Search} from './components/views';
 import './App.css';
 
 function App() {
   return (
     <div className="App">
-      <Home/>
-      <header className="App-header">
-      <SearchResults/>
-      </header>
+      <Router>
+        <Switch>
+          <Route path='/' exact component={() => <Home/>} />
+          <Route path='/results' exact component={() => <Search/>} />
+        </Switch>
+      </Router>
     </div>
   );
 }
