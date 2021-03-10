@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Redirect} from 'react-router-dom';
+import {Redirect, withRouter} from 'react-router-dom';
 export default class SearchBar extends Component {
     constructor(props) {
         super(props);
@@ -11,7 +11,7 @@ export default class SearchBar extends Component {
             search: false
         }
         this.handleSwitch = this.handleSwitch.bind(this);
-        this.handleChange = this.handleChange.bind(this);
+        this.handleQuery = this.handleQuery.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
@@ -31,8 +31,13 @@ export default class SearchBar extends Component {
         }
     }
 
-    handleChange(event) {
+    handleQuery(event) {
         this.setState({query: event.target.value});
+    }
+
+    handleFilter = (event) => {
+        this.setState({filter: event.target.value});
+        console.log(this.state.filter);
     }
 
     handleSubmit(event) {
@@ -40,6 +45,11 @@ export default class SearchBar extends Component {
         this.setState({
             search: true
         })
+        if(this.state.representative) {
+            this.props.history.push(`/search/representatives/${this.state.query}`)
+        } else {
+            this.props.history.push(`/search/polls/${this.state.query}`)
+        }
     }
 
     render() {
@@ -53,9 +63,9 @@ export default class SearchBar extends Component {
                     <input type="checkbox" onChange={this.handleSwitch}></input>
                     </label>
                     <label htmlFor="search">Search:
-                    <input type="text" id="search" name="search" onChange={this.handleChange}></input>
+                    <input type="text" id="search" name="search" onChange={this.handleQuery}></input>
                     </label>
-                    <input list="filters"></input>
+                    <input list="filters" onChange={this.handleFilter}></input>
                     <datalist id="filters">
                         {filters.map(item => {
                             return (<option value={item}></option>);
