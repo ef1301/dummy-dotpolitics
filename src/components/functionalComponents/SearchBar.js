@@ -5,19 +5,16 @@ export default class SearchBar extends Component {
         super(props);
         this.state = {
             query: '',
-            filter: '',
-            representative: null,
+            filter: 'By Location',
+            representative: true,
             filters: ['By Location', 'By Name'],
             search: false
         }
-        this.handleSwitch = this.handleSwitch.bind(this);
-        this.handleQuery = this.handleQuery.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
     }
 
-    handleSwitch(event) {
+    handleSwitch = (event) => {
         this.setState({
-            representative: event.target.checked
+            representative: event.target.checked === true ? false: true
         });
 
         if(this.state.representative === true) {
@@ -31,7 +28,7 @@ export default class SearchBar extends Component {
         }
     }
 
-    handleQuery(event) {
+    handleQuery = (event) => {
         this.setState({query: event.target.value});
     }
 
@@ -40,22 +37,27 @@ export default class SearchBar extends Component {
         console.log(this.state.filter);
     }
 
-    handleSubmit(event) {
+    handleSubmit = (event) => {
+        const {query, filter, representative} = this.state;
         event.preventDefault();
         this.setState({
             search: true
         })
-        if(this.state.representative) {
-            this.props.history.push(`/search/representatives/${this.state.query}`)
-        } else {
-            this.props.history.push(`/search/polls/${this.state.query}`)
-        }
     }
 
     render() {
-        const {query, filter, filters, search} = this.state;
+        const {query, filter, filters, representative, search} = this.state;
         if(search) {
-            <Redirect to='/results' />
+            return (
+                <Redirect to={{
+                    pathname: '/search',
+                    state: {
+                        searchValue: query,
+                        filter: filter,
+                        representative: representative
+                    }
+                }} />
+            );
         } else {
             return (
                 <form onSubmit={this.handleSubmit}>
@@ -63,9 +65,9 @@ export default class SearchBar extends Component {
                     <input type="checkbox" onChange={this.handleSwitch}></input>
                     </label>
                     <label htmlFor="search">Search:
-                    <input type="text" id="search" name="search" onChange={this.handleQuery}></input>
+                    <input type="text" value={query} id="search" name="search" onChange={this.handleQuery}></input>
                     </label>
-                    <input list="filters" onChange={this.handleFilter}></input>
+                    <input list="filters" value={filter} onChange={this.handleFilter}></input>
                     <datalist id="filters">
                         {filters.map(item => {
                             return (<option value={item}></option>);

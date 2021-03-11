@@ -1,21 +1,22 @@
 import React, {Component} from 'react';
 import SearchBar from '../functionalComponents/SearchBar';
 import RepByAddress from '../functionalComponents/repByAddress';
+import {Redirect, withRouter} from 'react-router-dom';
 export default class Home extends Component {
     constructor(props) {
         super(props);
         this.state = {
             results: [],
-            address: '115 Bay 38th street'
+            address: '11214',
         }
         console.log(this.state.address);
     }
 
     render() {
-        console.log(this.state.address);
+        const {search} = this.state;
         return (
             <div>
-                <SearchBar value={this.state.representative} filters={this.state.filters}/>
+                <SearchBar/>
                 <RepByAddress value={this.state.address}/>
             </div>
         );
