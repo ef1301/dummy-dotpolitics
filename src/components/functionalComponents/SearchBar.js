@@ -1,30 +1,24 @@
 import React, {Component} from 'react';
-import {Redirect, withRouter} from 'react-router-dom';
-export default class SearchBar extends Component {
+import {
+    Redirect,
+    withRouter
+} from "react-router-dom";
+import {FormControl, InputGroup, Dropdown, DropdownButton, Button, Form} from 'react-bootstrap';
+
+
+/*export const QueryParams = (encoded_address) => {
+    return (<Link to={{
+        pathname: `/search?query=${encoded_address}`,
+    }} />);
+}*/
+class SearchBar extends Component {
     constructor(props) {
         super(props);
         this.state = {
             query: '',
-            filter: 'By Location',
-            representative: true,
-            filters: ['By Location', 'By Name'],
-            search: false
-        }
-    }
-
-    handleSwitch = (event) => {
-        this.setState({
-            representative: event.target.checked === true ? false: true
-        });
-
-        if(this.state.representative === true) {
-            this.setState({
-                filters: ['By Location', 'By Name']
-            });
-        } else {
-            this.setState({
-                filters: ['By Location']
-            });
+            filter: 'Representatives',
+            filters: ['Representatives', 'Polls'],
+            redirect: false
         }
     }
 
@@ -37,45 +31,56 @@ export default class SearchBar extends Component {
         console.log(this.state.filter);
     }
 
+    renderRedirect = () => {
+        const {filter, query} = this.state;
+        console.log(filter);
+        let encoded_address = encodeURIComponent(query);
+        console.log(encoded_address);
+        return( <Redirect to={{
+            pathname: `/search/${query}`
+        }} />);
+    }
+
+
     handleSubmit = (event) => {
-        const {query, filter, representative} = this.state;
         event.preventDefault();
-        this.setState({
-            search: true
-        })
+        const {filter, query} = this.state;
+        console.log(filter);
+        let encoded_address = encodeURIComponent(query);
+        console.log(this.props);
+        this.props.history.push(`/search/${query}`);
     }
 
     render() {
-        const {query, filter, filters, representative, search} = this.state;
-        if(search) {
+        const {query, filters} = this.state;
+        //let encoded_address = encodeURIComponent(query);
             return (
-                <Redirect to={{
-                    pathname: '/search',
-                    state: {
-                        searchValue: query,
-                        filter: filter,
-                        representative: representative
-                    }
-                }} />
-            );
-        } else {
-            return (
-                <form onSubmit={this.handleSubmit}>
-                    <label className="switch">
-                    <input type="checkbox" onChange={this.handleSwitch}></input>
-                    </label>
-                    <label htmlFor="search">Search:
-                    <input type="text" value={query} id="search" name="search" onChange={this.handleQuery}></input>
-                    </label>
-                    <input list="filters" value={filter} onChange={this.handleFilter}></input>
-                    <datalist id="filters">
+                <>
+                    <Form onSubmit={this.handleSubmit}>
+                    <InputGroup >
+                    <FormControl value={query} onChange={this.handleQuery} 
+                        placeholder="Search" 
+                        aria-label="Search Bar" 
+                        aria-describedby="basic-addon2"
+                    />
+                
+                    <DropdownButton
+                        as={InputGroup.Append}
+                        variant="outline-secondary"
+                        title="Filter"
+                        id="input-group-dropdown-2"
+                        onSelect={this.handleFilter}
+                    >
                         {filters.map(item => {
-                            return (<option value={item}></option>);
+                            return (<Dropdown.Item onChange={this.handleFilter}>{item}</Dropdown.Item>);
                         })}
-                    </datalist>
-                    <input type="submit" value="Search"></input>
-                </form>
-            );
-        }
+                    </DropdownButton>
+                    <Button variant="primary" type="submit" onClick={this.handleSubmit}> Search </Button>
+                    </InputGroup>
+                    </Form>
+                </>
+        );
     }
 }
+
+export default withRouter(SearchBar);

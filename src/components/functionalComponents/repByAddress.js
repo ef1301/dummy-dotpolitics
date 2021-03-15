@@ -1,58 +1,49 @@
-import React, {Component} from 'react';
+import React, {useState} from 'react';
 import ResultCard from '../cards/result';
-export default class RepByAddress extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            error: null,
-            isLoaded: false,
-            items: []
-        }
-    }
+import {
+    useLocation
+} from "react-router-dom";
 
-    componentDidMount() {
-        const key = "AIzaSyDggZlSpjNNce614YxmnzLWCBm7QbN_-3A";
-        let encoded_address = encodeURIComponent(this.props.value);
-        fetch(`https://www.googleapis.com/civicinfo/v2/representatives?key=${key}&address=${encoded_address}`)
-            .then(res => res.json())
-            .then(
-                (result) => {
-                    this.setState({
-                        isLoaded: true,
-                        items: result.officials
-                    });
-                },
+const useQuery = () => {
+    return new URLSearchParams(useLocation().search);
+}
 
-            (error) => {
-                this.setState({
-                    isLoaded: true,
-                    error
-                });
-            }
-        )
-    }
+const RepByAddress = (props) => {
+    const [error, setError] = useState(null);
+    const [isLoaded, setIsLoaded] = useState(false);
+    const [items, setItems] = useState([]);
 
-    render() {
-        console.log(this.props.value);
-        const {error, isLoaded, items} = this.state;
-        console.log(items);
+    const key = "AIzaSyDggZlSpjNNce614YxmnzLWCBm7QbN_-3A";
+    //const query = useQuery();
+    const query = props.value;
+    console.log(query);
+    fetch(`https://www.googleapis.com/civicinfo/v2/representatives?key=${key}&address=${query}`)
+        .then(res => res.json())
+        .then(
+            (result) => {
+                setIsLoaded(isLoaded => true);
+                setItems(items => result.officials);
+                console.log(result);
+            },
+
+            (er) => {
+                setIsLoaded(isLoaded => true);
+                setError(error => er);
+            });
+
         if(error) {
-            return (
-                <div>Error: {error.message}</div>
-            )
+            return (<>Error: {error.message}</>);
         } else if(!isLoaded) {
-            return (
-                <div>Loading Search Results...</div>
-            )
+            return (<>Loading Search Results...</>);
         } else {
             return (
-                <div>
-                    {items.map(item => (
-                        <ResultCard key={item.id} item={item}/>
-                    ))}
-                </div>
-                
-            );
-        }
+            <>
+                {items.map((item,index) => (
+                    <ResultCard key={index} item={item}/>
+                ))}
+            </>
+        );
     }
-} 
+}
+
+export default RepByAddress;
