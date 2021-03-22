@@ -15,9 +15,10 @@ const RepByAddress = (props) => {
 
     const key = "AIzaSyDggZlSpjNNce614YxmnzLWCBm7QbN_-3A";
     //const query = useQuery();
-    const query = props.value;
+    const query = props.match.params.query;
     console.log(query);
-    fetch(`https://www.googleapis.com/civicinfo/v2/representatives?key=${key}&address=${query}`)
+    React.useEffect(() => {
+        fetch(`https://www.googleapis.com/civicinfo/v2/representatives?key=${key}&address=${query}`)
         .then(res => res.json())
         .then(
             (result) => {
@@ -30,13 +31,14 @@ const RepByAddress = (props) => {
                 setIsLoaded(isLoaded => true);
                 setError(error => er);
             });
+    }, []);
 
-        if(error) {
-            return (<>Error: {error.message}</>);
-        } else if(!isLoaded) {
-            return (<>Loading Search Results...</>);
-        } else {
-            return (
+    if(error) {
+        return (<>Error: {error.message}</>);
+    } else if(!isLoaded) {
+        return (<>Loading Search Results...</>);
+    } else {
+        return (
             <>
                 {items.map((item,index) => (
                     <ResultCard key={index} item={item}/>

@@ -6,15 +6,14 @@ export default class Search extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            filter: '',
-            query: '11214'
+            filter: ''
         }
     }
 
     searchResults = () => {
         const {filter, query} = this.state;
         if(filter === 'Representatives') {
-            return (<RepByAddress value={query} />);
+            return (<RepByAddress />);
         } else {
             return (<div></div>);
         }
@@ -25,7 +24,7 @@ export default class Search extends Component {
         const {filter, query} = this.state;
         return (
             <>
-                <RepByAddress value={query} />
+                <RepByAddress />
             </>
         );
     }

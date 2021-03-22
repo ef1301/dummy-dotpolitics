@@ -1,16 +1,9 @@
 import React, {Component} from 'react';
 import {
-    Redirect,
     withRouter
 } from "react-router-dom";
 import {FormControl, InputGroup, Dropdown, DropdownButton, Button, Form} from 'react-bootstrap';
 
-
-/*export const QueryParams = (encoded_address) => {
-    return (<Link to={{
-        pathname: `/search?query=${encoded_address}`,
-    }} />);
-}*/
 class SearchBar extends Component {
     constructor(props) {
         super(props);
@@ -31,29 +24,15 @@ class SearchBar extends Component {
         console.log(this.state.filter);
     }
 
-    renderRedirect = () => {
-        const {filter, query} = this.state;
-        console.log(filter);
-        let encoded_address = encodeURIComponent(query);
-        console.log(encoded_address);
-        return( <Redirect to={{
-            pathname: `/search/${query}`
-        }} />);
-    }
-
-
     handleSubmit = (event) => {
-        event.preventDefault();
         const {filter, query} = this.state;
         console.log(filter);
         let encoded_address = encodeURIComponent(query);
-        console.log(this.props);
-        this.props.history.push(`/search/${query}`);
+        this.props.history.push(`/search/${filter}/${encoded_address}`);
     }
 
     render() {
-        const {query, filters} = this.state;
-        //let encoded_address = encodeURIComponent(query);
+        const {query, filter, filters} = this.state;
             return (
                 <>
                     <Form onSubmit={this.handleSubmit}>
@@ -69,7 +48,6 @@ class SearchBar extends Component {
                         variant="outline-secondary"
                         title="Filter"
                         id="input-group-dropdown-2"
-                        onSelect={this.handleFilter}
                     >
                         {filters.map(item => {
                             return (<Dropdown.Item onChange={this.handleFilter}>{item}</Dropdown.Item>);
